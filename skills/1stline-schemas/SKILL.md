@@ -236,6 +236,11 @@ This keeps incident-generated alerts aligned with original alert context and avo
 
 Every schema package needs public-facing validation coverage for:
 
+- Local schema contract assertions:
+  - supported root keys only
+  - required fields are present
+  - forbidden fields stay absent
+  - lifecycle, ack, resolution, and transformation sections keep the expected shape
 - Manual complex sample extraction.
 - Trusted-source fixture extraction.
 - Missing optional fields.
@@ -244,6 +249,9 @@ Every schema package needs public-facing validation coverage for:
 - Grouped firing or resolved payloads.
 - Resolution detection.
 - Lifecycle mapping shape.
+- Fallback ordering and precedence behavior when the schema depends on fallback extraction.
+- Exact extracted-field assertions for the important fields the schema is expected to parse.
+- Transformed payload assertions when the schema uses a transformation template.
 - No unsupported root keys or accidental `incident.*` fields in the schema field list.
 
 Run:
@@ -253,7 +261,13 @@ pnpm validate:structure
 pnpm test
 ```
 
-The repo-local tests should stay customer-facing and rely on live API or MCP validation, not direct runtime imports from private code.
+The repo-local tests should stay customer-facing:
+
+- keep local assertions focused on the checked-in public schema package
+- keep behavior assertions focused on live API or MCP validation
+- do not reintroduce direct runtime imports from private code
+
+When editing an existing package, preserve the current regression surface unless the behavior change is intentional and documented.
 
 ## Deployed Pattern Validation
 

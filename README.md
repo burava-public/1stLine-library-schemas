@@ -144,10 +144,16 @@ Every schema package includes its own `package.yaml`.
 
 Every schema package must include unit tests.
 
-In this repository, “unit tests” means package-local validation tests that exercise the schema package contract and its public validation flow. They are required for every contribution.
+In this repository, “unit tests” means package-local validation tests that cover both:
+
+- local schema contract assertions against the checked-in schema JSON
+- live behavior assertions against public 1stLine validation surfaces
+
+They are required for every contribution.
 
 Minimum required coverage:
 
+- local schema contract checks for supported root keys, required fields, and forbidden fields
 - manual complex sample extraction
 - trusted-source fixture extraction
 - missing optional fields
@@ -156,6 +162,9 @@ Minimum required coverage:
 - grouped firing or resolved payloads
 - resolution detection
 - lifecycle mapping shape
+- fallback ordering and precedence behavior when the schema depends on fallback extraction
+- exact extracted-field assertions for the important fields the schema is supposed to parse
+- transformed payload assertions when the schema uses a transformation template
 - no unsupported root keys or accidental `incident.*` fields in the schema field list
 
 The authoritative contribution expectations live in the skill.

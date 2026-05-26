@@ -45,8 +45,16 @@ Required rules:
 
 All schema contributions must include unit tests.
 
+In this repository, unit tests are expected to cover both:
+
+- local schema contract assertions against the checked-in schema JSON
+- live API assertions against public 1stLine validation endpoints
+
+Contributors should preserve both layers when modifying an existing package.
+
 Required coverage:
 
+- local schema contract checks for supported root keys, required fields, and forbidden fields
 - manual complex sample extraction
 - trusted-source fixture extraction
 - missing optional fields
@@ -55,6 +63,9 @@ Required coverage:
 - grouped firing or resolved payloads
 - resolution detection
 - lifecycle mapping shape
+- fallback ordering and precedence behavior when the schema depends on fallback extraction
+- exact extracted-field assertions for the important fields the schema is supposed to parse
+- transformed payload assertions when the schema uses a transformation template
 - no unsupported root keys or accidental `incident.*` fields in the schema field list
 
 Run all tests:
