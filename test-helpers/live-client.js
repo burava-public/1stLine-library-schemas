@@ -1,9 +1,48 @@
 import assert from 'node:assert/strict';
+import fsSync from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const REQUIRED_ENV_VARS = ['FIRSTLINE_BASE_URL', 'FIRSTLINE_TOKEN', 'FIRSTLINE_ORG_UID'];
+const repoEnvPath = path.resolve(process.cwd(), '.env');
+
+loadDotEnv(repoEnvPath);
+
+function loadDotEnv(envPath) {
+  if (!fsSync.existsSync(envPath)) {
+    return;
+  }
+
+  const content = fsSync.readFileSync(envPath, 'utf8');
+  for (const rawLine of content.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith('#')) {
+      continue;
+    }
+
+    const normalizedLine = line.startsWith('export ') ? line.slice(7).trim() : line;
+    const separatorIndex = normalizedLine.indexOf('=');
+    if (separatorIndex <= 0) {
+      continue;
+    }
+
+    const key = normalizedLine.slice(0, separatorIndex).trim();
+    if (!key || process.env[key] !== undefined) {
+      continue;
+    }
+
+    let value = normalizedLine.slice(separatorIndex + 1).trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"'))
+      || (value.startsWith('\'') && value.endsWith('\''))
+    ) {
+      value = value.slice(1, -1);
+    }
+
+    process.env[key] = value;
+  }
+}
 
 export function missingLiveEnvVars() {
   return REQUIRED_ENV_VARS.filter((name) => !process.env[name]);
