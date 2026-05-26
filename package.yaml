@@ -2,6 +2,7 @@ name: "1stline-library-schemas"
 version: "0.1.0"
 private: false
 type: "module"
+packageManager: "pnpm@10.33.2"
 scripts:
   validate:structure: "node scripts/validate-structure.mjs"
   test: "node --test ./providers/**/*.test.js"
