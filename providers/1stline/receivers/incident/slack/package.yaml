@@ -1,0 +1,6 @@
+name: "@1stline/library-schema-1stline-incident-slack"
+version: "0.1.0"
+private: true
+type: "module"
+scripts:
+  test: "node --test 1stline-incident-slack.test.js"

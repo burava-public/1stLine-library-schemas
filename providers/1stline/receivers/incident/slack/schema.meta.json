@@ -1,0 +1,15 @@
+{
+  "uid": "bfbb5447-5501-4db1-bc0e-8c396c860791",
+  "name": "Incident-Slack default",
+  "description": "Alert Schema for 1stLine Incidents created from UI with Slack receiver",
+  "tags": [
+    "1stline",
+    "slack",
+    "default",
+    "incident"
+  ],
+  "producer": "1stline",
+  "receiver": "incident",
+  "variant": "slack",
+  "visibility": "public"
+}

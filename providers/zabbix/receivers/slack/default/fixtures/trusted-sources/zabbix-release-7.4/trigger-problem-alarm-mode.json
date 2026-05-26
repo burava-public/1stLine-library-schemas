@@ -1,0 +1,19 @@
+{
+	"channel": "#oncall",
+	"attachments": [
+		{
+			"fallback": "Problem: CPU utilization too high on checkout-api",
+			"title": "Problem: CPU utilization too high on checkout-api",
+			"color": "#E97659",
+			"title_link": "https://zabbix.example.com/tr_events.php?triggerid=24680&eventid=13579",
+			"text": "Problem started at 15:14:31 on 2026-05-14\nProblem name: CPU utilization too high on checkout-api\nHost: checkout-api-01\nSeverity: High\nOperational data: avg cpu=93.2%\nOriginal problem ID: 13579\nhttps://runbooks.example.com/checkout/cpu",
+			"actions": [
+				{
+					"type": "button",
+					"text": "Open in Zabbix",
+					"url": "https://zabbix.example.com/tr_events.php?triggerid=24680&eventid=13579"
+				}
+			]
+		}
+	]
+}

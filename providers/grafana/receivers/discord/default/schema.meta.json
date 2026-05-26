@@ -1,0 +1,14 @@
+{
+  "uid": "d01dd4ed-b877-4405-bd83-d0ae9d97376f",
+  "name": "Grafana Discord Default",
+  "description": "Default Grafana Discord alert payload schema for 1stLine.",
+  "tags": [
+    "grafana",
+    "discord",
+    "default"
+  ],
+  "producer": "grafana",
+  "receiver": "discord",
+  "variant": "default",
+  "visibility": "public"
+}

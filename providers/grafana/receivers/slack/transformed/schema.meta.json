@@ -1,0 +1,14 @@
+{
+  "uid": "26ff8db8-bf3a-4089-8002-63eebe4f0d10",
+  "name": "Grafana Slack Transformed",
+  "description": "Alert schema for Grafana default notification template with Slack receiver, dynamic label, annotation, and priority extraction.\nThis transformed variant renders Grafana payloads into the 1stLine Slack message shape, including inline UNACK/RESOLVE markers, ACK mapping, resolution mapping, and incident lifecycle metadata overrides.",
+  "tags": [
+    "grafana",
+    "slack",
+    "transformed"
+  ],
+  "producer": "grafana",
+  "receiver": "slack",
+  "variant": "transformed",
+  "visibility": "public"
+}

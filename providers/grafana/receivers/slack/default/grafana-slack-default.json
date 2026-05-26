@@ -1,0 +1,341 @@
+{
+  "fields": [
+    {
+      "name": "username",
+      "type": "string"
+    },
+    {
+      "name": "attachments",
+      "type": "array",
+      "description": "Array with 1 items"
+    },
+    {
+      "name": "attachments[0].title",
+      "type": "string"
+    },
+    {
+      "name": "attachments[0].title_link",
+      "type": "string"
+    },
+    {
+      "name": "attachments[0].text",
+      "type": "string"
+    },
+    {
+      "name": "attachments[0].fallback",
+      "type": "string"
+    },
+    {
+      "name": "attachments[0].footer",
+      "type": "string"
+    },
+    {
+      "name": "attachments[0].footer_icon",
+      "type": "string"
+    },
+    {
+      "name": "attachments[0].color",
+      "type": "string"
+    },
+    {
+      "name": "attachments[0].ts",
+      "type": "number"
+    },
+    {
+      "name": "labels",
+      "type": "dictionary",
+      "description": "Dynamic labels extracted from alert text"
+    },
+    {
+      "name": "labels.*",
+      "type": "string",
+      "description": "Dynamic key-value pairs from Dynamic labels extracted from alert text"
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "description": "Extracted alert value"
+    },
+    {
+      "name": "priority",
+      "type": "string",
+      "description": "Alert priority"
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "description": "Alert description"
+    },
+    {
+      "name": "summary",
+      "type": "string",
+      "description": "Alert summary"
+    },
+    {
+      "name": "source",
+      "type": "string",
+      "description": "Alert source link"
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "description": ""
+    }
+  ],
+  "sample": {
+    "username": "Grafana",
+    "attachments": [
+      {
+        "ts": 1766778140,
+        "text": "**Firing**\n\nValue: A=1, C=1, prometheus_ready=1, some_hardcoded_query=0.99789656\nLabels:\n - alertname = Complex alert\n - Maintainer = alerts@example.test\n - foo = bar\n - grafana_folder = Test folder\n - instance = prometheus.example.test\n - job = prometheus\n - priority = P1\n - test-complex-link = https://docs.example.test/runbooks/complex-alert\nAnnotations:\n - description = This is a multi-line description with some complex wording | / prometheus_ready\n\n\nBefore were many new lines. ASCII check\nSomething here\n\nsomething_there\\n\\n\n - runbook_url = https://docs.example.test/runbooks/grafana\n - summary = Multiline complex summmary\n```prometheus.example.test: 0.99789656```\n\n<This is a link|https://docs.example.test/1stline>\nSource: https://grafana.example.test/alerting/grafana/ff8agsdpqd3b4d/view?orgId=1\nSilence: https://grafana.example.test/alerting/silence/new?alertmanager=grafana&matcher=__alert_rule_uid__%3Dff8agsdpqd3b4d&matcher=Maintainer%3Dalerts%40example.test&matcher=foo%3Dbar&matcher=instance%3Dprometheus.example.test&matcher=job%3Dprometheus&matcher=priority%3DP1&matcher=test-complex-link%3Dhttps%3A%2F%2Fdocs.example.test%2Frunbooks%2Fcomplex-alert&orgId=1\n",
+        "color": "#D63232",
+        "title": "[FIRING:1] Complex alert Test folder (alerts@example.test bar prometheus.example.test prometheus P1 https://docs.example.test/runbooks/complex-alert)",
+        "footer": "Grafana v12.3.1",
+        "fallback": "[FIRING:1] Complex alert Test folder (alerts@example.test bar prometheus.example.test prometheus P1 https://docs.example.test/runbooks/complex-alert)",
+        "title_link": "https://grafana.example.test/alerting/grafana/ff8agsdpqd3b4d/view?orgId=1",
+        "footer_icon": "https://grafana.com/static/assets/img/fav32.png"
+      }
+    ]
+  },
+  "patterns": [
+    {
+      "name": "labels",
+      "type": "dictionary",
+      "dictionary": {
+        "type": "string",
+        "sourcePattern": {
+          "type": "keyPairRegex",
+          "config": {
+            "flags": "m",
+            "pattern": "^\\s*-\\s*(?<key>[^=\\s]+)\\s*=\\s*(?<value>[^\\n]+?)$",
+            "keyPrefix": " - ",
+            "extractAll": true,
+            "trimValues": true
+          }
+        }
+      },
+      "description": "Dynamic labels extracted from alert text",
+      "hasChildren": true,
+      "sourceField": "attachments.0.text",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "s",
+          "pattern": "Labels:\\n(?<extract>.*?)(\\nAnnotations:|\\nSilence:|\\z)"
+        }
+      },
+      "saveIntermediate": false,
+      "fallbacks": [
+        {
+          "type": "dictionary",
+          "description": "Fallback labels parsed from incident labels passthrough JSON",
+          "hasChildren": true,
+          "sourceField": "incident_labels_json",
+          "sourcePattern": {
+            "type": "split",
+            "config": {
+              "delimiter": "__NO_SPLIT_SENTINEL__"
+            }
+          },
+          "dictionary": {
+            "type": "string",
+            "sourcePattern": {
+              "type": "json_extract",
+              "config": {
+                "jsonPath": "$.*",
+                "parseAsJson": true
+              }
+            }
+          },
+          "saveIntermediate": false
+        }
+      ]
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "description": "Extracted alert value",
+      "sourceField": "attachments.0.text",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "s",
+          "pattern": "Value:\\s*(?<extract>.*?)\\nLabels:"
+        }
+      }
+    },
+    {
+      "name": "priority",
+      "type": "string",
+      "description": "Alert priority",
+      "sourceField": "attachments.0.text",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "i",
+          "pattern": "\\s*-\\s*priority\\s*=\\s*(?<extract>[^\\n]+)"
+        }
+      }
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "description": "Alert description",
+      "sourceField": "attachments.0.text",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "s",
+          "pattern": "\\s*-\\s*description\\s*=\\s*(?<extract>.*?)(?=\\n\\s*-\\s*|\\n```|\\n<|\\nSource:|\\nSilence:|\\z)"
+        }
+      }
+    },
+    {
+      "name": "summary",
+      "type": "string",
+      "description": "Alert summary",
+      "sourceField": "attachments.0.text",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "s",
+          "pattern": "\\s*-\\s*summary\\s*=\\s*(?<extract>.*?)(?=\\n\\s*-\\s*|\\nSource:|\\nSilence:|\\z)"
+        }
+      }
+    },
+    {
+      "name": "source",
+      "type": "string",
+      "description": "Alert source link",
+      "sourceField": "attachments.0.text",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "i",
+          "pattern": "Source:\\s*(?<extract>https?://[^\\s\\n]+)"
+        }
+      }
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "description": "",
+      "sourceField": "attachments.0.title",
+      "saveIntermediate": false
+    }
+  ],
+  "ack_mapping": {
+    "title": "title",
+    "ack_link": "attachments[0].title_link",
+    "overrides": {
+      "attachments[0].color": "#6495ED"
+    },
+    "unack_link": "labels.__alert_unack_link__",
+    "fallback_title": "attachments[0].fallback",
+    "description": "attachments[0].text"
+  },
+  "allow_guest_ack": true,
+  "resolution_patterns": [
+    {
+      "name": "status",
+      "type": "string",
+      "description": "Check if alert is resolved",
+      "sourceField": "attachments.0.title",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "i",
+          "pattern": "\\[(?<extract>RESOLVED).*?\\]"
+        }
+      }
+    }
+  ],
+  "resolution_mapping": {
+    "title": "title",
+    "overrides": {
+      "attachments[0].color": "#33cc33"
+    },
+    "description": "attachments[0].text",
+    "fallback_title": "attachments[0].fallback",
+    "resolve_link": "labels.__alert_resolve_link__"
+  },
+  "incident_lifecycle_mapping": {
+    "closed": {
+      "title": "attachments[0].title",
+      "status": "",
+      "overrides": {
+        "attachments[0].text": "Priority: ${incident.priority}\n${incident.event.actor_name} ${incident.event.action} incident from ${incident.event.from_status} to ${incident.event.to_status}\nDescription: ${incident.description}\nCreated: ${incident.created_at}; Started: ${incident.started_at}; Detected: ${incident.detected_at}\nResolved at: ${incident.resolved_at}\nClosed at: ${incident.closed_at}\nMTTR: ${incident.metrics.mttr_seconds} seconds; Overriden: ${incident.metrics.mttr_is_overridden}; Note: ${incident.metrics.mttr_override_note}\nIncident Uid: ${incident.uid}\nCreated by: ${incident.created_by_name} (${incident.created_by_email})",
+        "attachments[0].color": "#808080",
+        "attachments[0].fallback": "${incident.event.to_status} - ${incident.priority} ${incident.title}"
+      },
+      "send_alert": true,
+      "incident_link": "attachments[0].title_link",
+      "register_alert": false
+    },
+    "created": {
+      "title": "attachments[0].title",
+      "status": "labels.status",
+      "overrides": {
+        "priority": "${priority}",
+        "attachments[0].color": "#D63232",
+        "labels.created_by_name": "${incident.created_by_name}",
+        "labels.created_by_email": "${incident.created_by_email}",
+        "labels.created_at": "${incident.created_at}",
+        "attachments[0].fallback": "${incident.title}",
+        "incident_labels_json": "${labels}"
+      },
+      "send_alert": true,
+      "description": "description",
+      "incident_link": "attachments[0].title_link",
+      "register_alert": true
+    },
+    "reopened": {
+      "title": "attachments[0].title",
+      "status": "",
+      "overrides": {
+        "priority": "${priority}",
+        "attachments[0].color": "#D63232",
+        "attachments[0].text": "Priority: ${incident.priority}\n${incident.event.actor_name} ${incident.event.action} incident from ${incident.event.from_status} to ${incident.event.to_status}\nDescription: ${incident.description}\nCreated: ${incident.created_at}; Started: ${incident.started_at}; Detected: ${incident.detected_at}\nResolved at: ${incident.resolved_at}\nMTTR: ${incident.metrics.mttr_seconds} seconds; Overriden: ${incident.metrics.mttr_is_overridden}; Note: ${incident.metrics.mttr_override_note}\nIncident Uid: ${incident.uid}\nCreated by: ${incident.created_by_name} (${incident.created_by_email})",
+        "attachments[0].fallback": "${incident.event.to_status} - ${incident.priority} ${incident.title}",
+        "incident_labels_json": "${labels}"
+      },
+      "send_alert": true,
+      "description": "",
+      "incident_link": "attachments[0].title_link",
+      "register_alert": true
+    },
+    "resolved": {
+      "title": "attachments[0].title",
+      "status": "",
+      "overrides": {
+        "attachments[0].color": "#33cc33",
+        "attachments[0].text": "Priority: ${incident.priority}\n${incident.event.actor_name} ${incident.event.action} incident from ${incident.event.from_status} to ${incident.event.to_status}\nDescription: ${incident.description}\nCreated: ${incident.created_at}; Started: ${incident.started_at}; Detected: ${incident.detected_at}\nResolved at: ${incident.resolved_at}\nMTTR: ${incident.metrics.mttr_seconds} seconds; Overriden: ${incident.metrics.mttr_is_overridden}; Note: ${incident.metrics.mttr_override_note}\nIncident Uid: ${incident.uid}\nCreated by: ${incident.created_by_name} (${incident.created_by_email})",
+        "attachments[0].fallback": "${incident.event.to_status} - ${incident.priority} ${incident.title}"
+      },
+      "send_alert": true,
+      "description": "",
+      "incident_link": "attachments[0].title_link",
+      "register_alert": false
+    },
+    "priority_changed": {
+      "title": "attachments[0].title",
+      "status": "",
+      "overrides": {
+        "priority": "${incident.priority}",
+        "attachments[0].color": "#DAC17C",
+        "attachments[0].text": "Priority: ${incident.priority}\n${incident.event.actor_name} ${incident.event.action} incident from ${incident.event.from_status} to ${incident.event.to_status}\nDescription: ${incident.description}\nCreated: ${incident.created_at}; Started: ${incident.started_at}; Detected: ${incident.detected_at}\nResolved at: ${incident.resolved_at}\nClosed at: ${incident.closed_at}\nMTTR: ${incident.metrics.mttr_seconds} seconds; Overriden: ${incident.metrics.mttr_is_overridden}; Note: ${incident.metrics.mttr_override_note}\nIncident Uid: ${incident.uid}\nCreated by: ${incident.created_by_name} (${incident.created_by_email})",
+        "attachments[0].fallback": "priority changed: ${incident.priority} ${incident.title}"
+      },
+      "send_alert": true,
+      "description": "",
+      "incident_link": "attachments[0].title_link",
+      "register_alert": false
+    }
+  },
+  "resolution_proxy_config": "initial",
+  "proxy_recurrent_alerts": false,
+  "fingerprint_fields": [
+    "labels"
+  ],
+  "default_forward_to": null
+}

@@ -1,0 +1,13 @@
+* @1stline-library-schemas-maintainers
+
+/.github/ @1stline-library-schemas-maintainers
+/README.md @1stline-library-schemas-maintainers
+/CONTRIBUTING.md @1stline-library-schemas-maintainers
+/SECURITY.md @1stline-library-schemas-maintainers
+/LICENSE @1stline-library-schemas-maintainers
+/alert-payload-sources.md @1stline-library-schemas-maintainers
+/package.yaml @1stline-library-schemas-maintainers
+/scripts/ @1stline-library-schemas-maintainers
+/skills/ @1stline-library-schemas-maintainers
+/test-helpers/ @1stline-library-schemas-maintainers
+/providers/ @1stline-library-schemas-maintainers

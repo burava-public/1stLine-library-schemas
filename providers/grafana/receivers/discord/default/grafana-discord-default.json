@@ -1,0 +1,451 @@
+{
+  "fields": [
+    {
+      "name": "username",
+      "type": "string"
+    },
+    {
+      "name": "content",
+      "type": "string"
+    },
+    {
+      "name": "avatar_url",
+      "type": "string"
+    },
+    {
+      "name": "embeds",
+      "type": "array",
+      "description": "Array with 1 items"
+    },
+    {
+      "name": "embeds[0].title",
+      "type": "string"
+    },
+    {
+      "name": "embeds[0].type",
+      "type": "string"
+    },
+    {
+      "name": "embeds[0].url",
+      "type": "string"
+    },
+    {
+      "name": "embeds[0].color",
+      "type": "number"
+    },
+    {
+      "name": "embeds[0].footer.text",
+      "type": "string"
+    },
+    {
+      "name": "embeds[0].footer.icon_url",
+      "type": "string"
+    },
+    {
+      "name": "labels",
+      "type": "dictionary",
+      "description": "Dynamic labels extracted from alert text"
+    },
+    {
+      "name": "labels.*",
+      "type": "string",
+      "description": "Dynamic key-value pairs from Dynamic labels extracted from alert text"
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "description": "Extracted alert value"
+    },
+    {
+      "name": "priority",
+      "type": "string",
+      "description": "Alert priority"
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "description": "Alert status extracted from the Discord embed title"
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "description": "Alert description"
+    },
+    {
+      "name": "summary",
+      "type": "string",
+      "description": "Alert summary"
+    },
+    {
+      "name": "source",
+      "type": "string",
+      "description": "Alert source link when Grafana includes a Source line"
+    },
+    {
+      "name": "silence",
+      "type": "string",
+      "description": "Grafana silence link when present"
+    },
+    {
+      "name": "dashboard",
+      "type": "string",
+      "description": "Grafana dashboard link when present"
+    },
+    {
+      "name": "panel",
+      "type": "string",
+      "description": "Grafana panel link when present"
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "description": ""
+    }
+  ],
+  "sample": {
+    "username": "Grafana",
+    "avatar_url": "https://grafana.com/static/assets/img/fav32.png",
+    "content": "**Firing**\n\nValue: A=1, C=1, prometheus_ready=1, some_hardcoded_query=0.99789656\nLabels:\n - alertname = Complex alert\n - Maintainer = alerts@example.test\n - foo = bar\n - grafana_folder = Test folder\n - instance = prometheus.example.test\n - job = prometheus\n - priority = P1\n - test-complex-link = https://docs.example.test/runbooks/complex-alert\nAnnotations:\n - description = This is a multi-line description with some complex wording | / prometheus_ready\n\n\nBefore were many new lines. ASCII check\nSomething here\n\nsomething_there\\n\\n\n - runbook_url = https://docs.example.test/runbooks/grafana\n - summary = Multiline complex summmary\n```prometheus.example.test: 0.99789656```\n\n<https://docs.example.test/1stline>\nSource: https://grafana.example.test/alerting/grafana/ff8agsdpqd3b4d/view?orgId=1\nSilence: https://grafana.example.test/alerting/silence/new?alertmanager=grafana&matcher=__alert_rule_uid__%3Dff8agsdpqd3b4d&matcher=Maintainer%3Dalerts%40example.test&matcher=foo%3Dbar&matcher=instance%3Dprometheus.example.test&matcher=job%3Dprometheus&matcher=priority%3DP1&matcher=test-complex-link%3Dhttps%3A%2F%2Fdocs.example.test%2Frunbooks%2Fcomplex-alert&orgId=1\n",
+    "embeds": [
+      {
+        "title": "[FIRING:1] Complex alert Test folder (alerts@example.test bar prometheus.example.test prometheus P1 https://docs.example.test/runbooks/complex-alert)",
+        "type": "rich",
+        "url": "https://grafana.example.test/alerting/grafana/ff8agsdpqd3b4d/view?orgId=1",
+        "color": 14037554,
+        "footer": {
+          "text": "Grafana v12.3.1",
+          "icon_url": "https://grafana.com/static/assets/img/fav32.png"
+        }
+      }
+    ]
+  },
+  "patterns": [
+    {
+      "name": "labels",
+      "type": "dictionary",
+      "dictionary": {
+        "type": "string",
+        "sourcePattern": {
+          "type": "keyPairRegex",
+          "config": {
+            "flags": "m",
+            "pattern": "^\\s*-\\s*(?<key>[^=\\s]+)\\s*=\\s*(?<value>[^\\n]+?)$",
+            "keyPrefix": " - ",
+            "extractAll": true,
+            "trimValues": true
+          }
+        }
+      },
+      "description": "Dynamic labels extracted from alert text",
+      "hasChildren": true,
+      "sourceField": "content",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "s",
+          "pattern": "Labels:\\n(?<extract>.*?)(\\nAnnotations:|\\nSource:|\\nSilence:|\\nDashboard:|\\nPanel:|\\z)"
+        }
+      },
+      "saveIntermediate": false,
+      "fallbacks": [
+        {
+          "type": "dictionary",
+          "description": "Fallback labels parsed from incident labels passthrough JSON",
+          "hasChildren": true,
+          "sourceField": "incident_labels_json",
+          "sourcePattern": {
+            "type": "split",
+            "config": {
+              "delimiter": "__NO_SPLIT_SENTINEL__"
+            }
+          },
+          "dictionary": {
+            "type": "string",
+            "sourcePattern": {
+              "type": "json_extract",
+              "config": {
+                "jsonPath": "$.*",
+                "parseAsJson": true
+              }
+            }
+          },
+          "saveIntermediate": false
+        }
+      ]
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "description": "Extracted alert value",
+      "sourceField": "content",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "s",
+          "pattern": "Value:\\s*(?<extract>.*?)\\nLabels:"
+        }
+      }
+    },
+    {
+      "name": "priority",
+      "type": "string",
+      "description": "Alert priority from labels",
+      "sourceField": "content",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "is",
+          "pattern": "Labels:\\n(?:(?!\\nAnnotations:|\\nSource:|\\nSilence:|\\nDashboard:|\\nPanel:|\\n\\n\\n\\*\\*(?:Firing|Resolved)\\*\\*).)*?\\s*-\\s*priority\\s*=\\s*(?<extract>[^\\n]+)"
+        }
+      },
+      "fallbacks": [
+        {
+          "type": "string",
+          "description": "Alert priority fallback from annotations",
+          "sourceField": "content",
+          "sourcePattern": {
+            "type": "regex",
+            "config": {
+              "flags": "is",
+              "pattern": "Annotations:\\n(?:(?!\\nSource:|\\nSilence:|\\nDashboard:|\\nPanel:|\\n\\n\\n\\*\\*(?:Firing|Resolved)\\*\\*).)*?\\s*-\\s*priority\\s*=\\s*(?<extract>[^\\n]+)"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "description": "Alert status extracted from the Discord embed title",
+      "sourceField": "embeds.0.title",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "i",
+          "pattern": "\\[(?<extract>FIRING|RESOLVED)(?::\\d+)?\\]"
+        }
+      }
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "description": "Alert description from annotations",
+      "sourceField": "content",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "s",
+          "pattern": "\\s*-\\s*description\\s*=\\s*(?<extract>.*?)(?=\\n\\s*-\\s*|\\n```|\\n<|\\nSource:|\\nSilence:|\\nDashboard:|\\nPanel:|\\n\\n\\n\\*\\*(?:Firing|Resolved)\\*\\*|\\z)"
+        }
+      },
+      "fallbacks": [
+        {
+          "type": "string",
+          "description": "Alert description fallback from the first alert section",
+          "sourceField": "content",
+          "sourcePattern": {
+            "type": "regex",
+            "config": {
+              "flags": "is",
+              "pattern": "\\*\\*(?:Firing|Resolved)\\*\\*\\s*\\n(?<extract>.*?)(?=\\n(?:Source|Silence|Dashboard|Panel):|\\n\\n\\n\\*\\*(?:Firing|Resolved)\\*\\*|\\z)"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "summary",
+      "type": "string",
+      "description": "Alert summary from annotations",
+      "sourceField": "content",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "s",
+          "pattern": "\\s*-\\s*summary\\s*=\\s*(?<extract>.*?)(?=\\n\\s*-\\s*|\\nSource:|\\nSilence:|\\nDashboard:|\\nPanel:|\\n\\n\\n\\*\\*(?:Firing|Resolved)\\*\\*|\\z)"
+        }
+      },
+      "fallbacks": [
+        {
+          "type": "string",
+          "description": "Alert summary fallback from the first annotation value",
+          "sourceField": "content",
+          "sourcePattern": {
+            "type": "regex",
+            "config": {
+              "flags": "is",
+              "pattern": "Annotations:\\n\\s*-\\s*[^=\\n]+\\s*=\\s*(?<extract>.*?)(?=\\n\\s*-\\s*|\\n```|\\n<|\\nSource:|\\nSilence:|\\nDashboard:|\\nPanel:|\\n\\n\\n\\*\\*(?:Firing|Resolved)\\*\\*|\\z)"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "source",
+      "type": "string",
+      "description": "Alert source link when Grafana includes a Source line",
+      "sourceField": "content",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "i",
+          "pattern": "Source:\\s*(?<extract>https?://[^\\s\\n]+)"
+        }
+      }
+    },
+    {
+      "name": "silence",
+      "type": "string",
+      "description": "Grafana silence link when present",
+      "sourceField": "content",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "i",
+          "pattern": "Silence:\\s*(?<extract>https?://[^\\s\\n]+)"
+        }
+      }
+    },
+    {
+      "name": "dashboard",
+      "type": "string",
+      "description": "Grafana dashboard link when present",
+      "sourceField": "content",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "i",
+          "pattern": "Dashboard:\\s*(?<extract>https?://[^\\s\\n]+)"
+        }
+      }
+    },
+    {
+      "name": "panel",
+      "type": "string",
+      "description": "Grafana panel link when present",
+      "sourceField": "content",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "i",
+          "pattern": "Panel:\\s*(?<extract>https?://[^\\s\\n]+)"
+        }
+      }
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "description": "",
+      "sourceField": "embeds.0.title",
+      "saveIntermediate": false
+    }
+  ],
+  "ack_mapping": {
+    "title": "title",
+    "ack_link": "embeds[0].url",
+    "overrides": {
+      "embeds[0].color": "6591981"
+    },
+    "unack_link": "labels.__alert_unack_link__",
+    "description": "content"
+  },
+  "allow_guest_ack": true,
+  "resolution_patterns": [
+    {
+      "name": "status",
+      "type": "string",
+      "description": "Check if alert is resolved",
+      "sourceField": "embeds.0.title",
+      "sourcePattern": {
+        "type": "regex",
+        "config": {
+          "flags": "i",
+          "pattern": "\\[(?<extract>RESOLVED).*?\\]"
+        }
+      }
+    }
+  ],
+  "resolution_mapping": {
+    "title": "title",
+    "overrides": {
+      "embeds[0].color": "3581519"
+    },
+    "description": "content",
+    "resolve_link": "labels.__alert_resolve_link__"
+  },
+  "incident_lifecycle_mapping": {
+    "closed": {
+      "title": "embeds[0].title",
+      "status": "labels.status",
+      "overrides": {
+        "content": "Priority: ${incident.priority}\n${incident.event.actor_name} ${incident.event.action} incident from ${incident.event.from_status} to ${incident.event.to_status}\nDescription: ${incident.description}\nCreated: ${incident.created_at}; Started: ${incident.started_at}; Detected: ${incident.detected_at}\nResolved at: ${incident.resolved_at}\nClosed at: ${incident.closed_at}\nMTTR: ${incident.metrics.mttr_seconds} seconds; Overriden: ${incident.metrics.mttr_is_overridden}; Note: ${incident.metrics.mttr_override_note}\nIncident Uid: ${incident.uid}\nCreated by: ${incident.created_by_name} (${incident.created_by_email})",
+        "embeds[0].color": "8421504"
+      },
+      "send_alert": true,
+      "incident_link": "embeds[0].url",
+      "register_alert": false
+    },
+    "created": {
+      "title": "embeds[0].title",
+      "status": "labels.status",
+      "overrides": {
+        "priority": "${priority}",
+        "embeds[0].color": "14037554",
+        "labels.event_actor_name": "${incident.event.actor_name}",
+        "labels.created_by_name": "${incident.created_by_name}",
+        "labels.created_by_email": "${incident.created_by_email}",
+        "labels.created_at": "${incident.created_at}",
+        "incident_labels_json": "${labels}"
+      },
+      "send_alert": true,
+      "description": "description",
+      "incident_link": "embeds[0].url",
+      "register_alert": true
+    },
+    "reopened": {
+      "title": "embeds[0].title",
+      "status": "labels.status",
+      "overrides": {
+        "priority": "${priority}",
+        "embeds[0].color": "14037554",
+        "content": "Priority: ${incident.priority}\n${incident.event.actor_name} ${incident.event.action} incident from ${incident.event.from_status} to ${incident.event.to_status}\nDescription: ${incident.description}\nCreated: ${incident.created_at}; Started: ${incident.started_at}; Detected: ${incident.detected_at}\nResolved at: ${incident.resolved_at}\nMTTR: ${incident.metrics.mttr_seconds} seconds; Overriden: ${incident.metrics.mttr_is_overridden}; Note: ${incident.metrics.mttr_override_note}\nIncident Uid: ${incident.uid}\nCreated by: ${incident.created_by_name} (${incident.created_by_email})",
+        "incident_labels_json": "${labels}"
+      },
+      "send_alert": true,
+      "incident_link": "embeds[0].url",
+      "register_alert": true
+    },
+    "resolved": {
+      "title": "embeds[0].title",
+      "status": "labels.status",
+      "overrides": {
+        "embeds[0].color": "3581519",
+        "labels.metrics_mttr_seconds": "${incident.metrics.mttr_seconds}",
+        "content": "Priority: ${incident.priority}\n${incident.event.actor_name} ${incident.event.action} incident from ${incident.event.from_status} to ${incident.event.to_status}\nDescription: ${incident.description}\nCreated: ${incident.created_at}; Started: ${incident.started_at}; Detected: ${incident.detected_at}\nResolved at: ${incident.resolved_at}\nMTTR: ${incident.metrics.mttr_seconds} seconds; Overriden: ${incident.metrics.mttr_is_overridden}; Note: ${incident.metrics.mttr_override_note}\nIncident Uid: ${incident.uid}\nCreated by: ${incident.created_by_name} (${incident.created_by_email})"
+      },
+      "send_alert": true,
+      "description": "",
+      "incident_link": "embeds[0].url",
+      "register_alert": false
+    },
+    "priority_changed": {
+      "title": "embeds[0].title",
+      "status": "",
+      "overrides": {
+        "priority": "${incident.priority}",
+        "embeds[0].color": "14336380",
+        "content": "Priority: ${incident.priority}\n${incident.event.actor_name} ${incident.event.action} incident from ${incident.event.from_status} to ${incident.event.to_status}\nDescription: ${incident.description}\nCreated: ${incident.created_at}; Started: ${incident.started_at}; Detected: ${incident.detected_at}\nResolved at: ${incident.resolved_at}\nClosed at: ${incident.closed_at}\nMTTR: ${incident.metrics.mttr_seconds} seconds; Overriden: ${incident.metrics.mttr_is_overridden}; Note: ${incident.metrics.mttr_override_note}\nIncident Uid: ${incident.uid}\nCreated by: ${incident.created_by_name} (${incident.created_by_email})"
+      },
+      "send_alert": true,
+      "description": "",
+      "incident_link": "embeds[0].url",
+      "register_alert": false
+    }
+  },
+  "resolution_proxy_config": "1stLine",
+  "proxy_recurrent_alerts": false,
+  "fingerprint_fields": [
+    "labels"
+  ],
+  "default_forward_to": null
+}

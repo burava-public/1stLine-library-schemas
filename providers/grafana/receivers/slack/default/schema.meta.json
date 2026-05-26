@@ -1,0 +1,14 @@
+{
+  "uid": "437250bc-0922-4c85-9c59-97d6a1278143",
+  "name": "Grafana-Slack default",
+  "description": "Alert schema for Grafana default notification template with Slack receiver and dynamic label, annotation, and priority extraction.\nThis default variant performs minimal transformations and forwards Grafana-origin resolved Slack payloads by using `resolution_proxy_config: \"initial\"`.",
+  "tags": [
+    "grafana",
+    "slack",
+    "default"
+  ],
+  "producer": "grafana",
+  "receiver": "slack",
+  "variant": "default",
+  "visibility": "public"
+}

@@ -1,0 +1,10 @@
+{
+	"embeds": [
+		{
+			"color": 39168,
+			"url": "https://zabbix.example.com/tr_events.php?triggerid=24680&eventid=13579",
+			"title": "Resolved in 5m 12s: CPU utilization too high on checkout-api",
+			"description": "Problem has been resolved in 5m 12s at 15:19:43 on 2026-05-14\nProblem name: CPU utilization too high on checkout-api\nHost: checkout-api-01\nSeverity: High\nOriginal problem ID: 13579\nhttps://runbooks.example.com/checkout/cpu"
+		}
+	]
+}

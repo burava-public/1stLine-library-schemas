@@ -1,0 +1,16 @@
+{
+	"content": "**Firing**\n\nValue: [no value]\nLabels:\n - alertname = alert1\n - lbl1 = val1\nAnnotations:\n - ann1 = annv1\nSilence: https://grafana.example.test/alerting/silence/new?alertmanager=grafana&matcher=alertname%3Dalert1&matcher=lbl1%3Dval1\nDashboard: https://grafana.example.test/d/abcd\nPanel: https://grafana.example.test/d/abcd?viewPanel=efgh\n",
+	"embeds": [
+		{
+			"color": 14037554,
+			"footer": {
+				"icon_url": "https://grafana.com/static/assets/img/fav32.png",
+				"text": "Grafana v0.0.0"
+			},
+			"title": "[FIRING:1]  (val1)",
+			"url": "https://grafana.example.test/alerting/list",
+			"type": "rich"
+		}
+	],
+	"username": "Grafana"
+}

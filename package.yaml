@@ -1,0 +1,10 @@
+name: "1stline-library-schemas"
+version: "0.1.0"
+private: false
+type: "module"
+scripts:
+  validate:structure: "node scripts/validate-structure.mjs"
+  test: "node --test ./providers/**/*.test.js"
+  test:live: "node --test ./providers/**/*.test.js"
+engines:
+  node: ">=20"

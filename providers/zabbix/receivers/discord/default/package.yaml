@@ -1,0 +1,6 @@
+name: "@1stline/library-schema-zabbix-discord-default"
+version: "0.1.0"
+private: true
+type: "module"
+scripts:
+  test: "node --test zabbix-discord-default.test.js"

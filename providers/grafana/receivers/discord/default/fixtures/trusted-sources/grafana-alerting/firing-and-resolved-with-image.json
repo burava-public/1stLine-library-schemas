@@ -1,0 +1,23 @@
+{
+	"content": "**Firing**\n\nValue: [no value]\nLabels:\n - alertname = alert1\n - lbl1 = val2\nAnnotations:\nSilence: https://grafana.example.test/alerting/silence/new?alertmanager=grafana&matcher=alertname%3Dalert1&matcher=lbl1%3Dval2\n\n\n**Resolved**\n\nValue: [no value]\nLabels:\n - alertname = alert1\n - lbl1 = val1\nAnnotations:\nSilence: https://grafana.example.test/alerting/silence/new?alertmanager=grafana&matcher=alertname%3Dalert1&matcher=lbl1%3Dval1\n",
+	"embeds": [
+		{
+			"color": 14037554,
+			"footer": {
+				"icon_url": "https://grafana.com/static/assets/img/fav32.png",
+				"text": "Grafana v0.0.0"
+			},
+			"title": "[FIRING:1]  ",
+			"url": "https://grafana.example.test/alerting/list",
+			"type": "rich"
+		},
+		{
+			"image": {
+				"url": "attachment://test-image-2.jpg"
+			},
+			"title": "alert1",
+			"color": 14037554
+		}
+	],
+	"username": "Grafana"
+}
