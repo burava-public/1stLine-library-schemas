@@ -66,6 +66,8 @@ export FIRSTLINE_TOKEN="..."
 export FIRSTLINE_ORG_UID="your-org-uid"
 ```
 
+or add them to the `.env` file.
+
 ## MCP
 
 Example configuration for 1stLine MCP with Codex:
