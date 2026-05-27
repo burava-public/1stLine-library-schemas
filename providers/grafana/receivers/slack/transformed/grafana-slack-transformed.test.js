@@ -115,6 +115,17 @@ await test('handles summary and description fallbacks and priority precedence th
   assert.strictEqual(result.data.finalExtractedData.priority, 'P1');
 });
 
+await test('does not truncate description when annotation text contains letter z through the live API', { skip: liveSkipReason() }, async () => {
+  const payload = cloneJson(schemaContent.sample);
+  payload.attachments[0].text = '**Firing**\n\nValue: C=1, reduce=0.6999999999999995\nLabels:\n - alertname = pgEdge CPU usage limits\n - discord = true\n - grafana_folder = Burava Ecosystem\n - priority = P2\n - slack = true\nAnnotations:\n - description = Database pgEdge containers high CPU load. Use Database Observability or connect to Hetzner instances to investigate\n - summary = ```[no value]: 0.6999999999999995```\nSource: https://burava.grafana.net/alerting/grafana/ffk3168fnlekga/view?orgId=1\nSilence: https://burava.grafana.net/alerting/silence/new?alertmanager=grafana&matcher=__alert_rule_uid__%3Dffk3168fnlekga&matcher=discord%3Dtrue&matcher=priority%3DP2&matcher=slack%3Dtrue&orgId=1';
+
+  const result = await testPatternsLive({ schema: schemaContent, payload });
+  assert.strictEqual(
+    result.data.finalExtractedData.description,
+    'Database pgEdge containers high CPU load. Use Database Observability or connect to Hetzner instances to investigate'
+  );
+});
+
 await test('extracts resolution status and renders transformed payload through the live API', { skip: liveSkipReason() }, async () => {
   const resolved = cloneJson(schemaContent.sample);
   resolved.attachments[0].title = '[RESOLVED:1] Complex alert Test folder (alerts@example.test bar prometheus.example.test prometheus P1)';

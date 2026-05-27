@@ -162,6 +162,17 @@ await test('handles summary and description fallbacks and priority precedence th
   assert.strictEqual(result.data.finalExtractedData.priority, undefined);
 });
 
+await test('does not truncate description when annotation text contains letter z through the live API', { skip: liveSkipReason() }, async () => {
+  const payload = cloneJson(schemaContent.sample);
+  payload.content = '**Firing**\n\nValue: C=1, reduce=0.6999999999999995\nLabels:\n - alertname = pgEdge CPU usage limits\n - discord = true\n - grafana_folder = Burava Ecosystem\n - priority = P2\n - slack = true\nAnnotations:\n - description = Database pgEdge containers high CPU load. Use Database Observability or connect to Hetzner instances to investigate\n - summary = ```[no value]: 0.6999999999999995```\nSource: https://burava.grafana.net/alerting/grafana/ffk3168fnlekga/view?orgId=1\nSilence: https://burava.grafana.net/alerting/silence/new?alertmanager=grafana&matcher=__alert_rule_uid__%3Dffk3168fnlekga&matcher=discord%3Dtrue&matcher=priority%3DP2&matcher=slack%3Dtrue&orgId=1\nDashboard: https://burava.grafana.net/d/bup99nc?from=1779870990000&orgId=1&to=1779874625227\nPanel: https://burava.grafana.net/d/bup99nc?from=1779870990000&orgId=1&to=1779874625227&viewPanel=21\n';
+
+  const result = await testPatternsLive({ schema: schemaContent, payload });
+  assert.strictEqual(
+    result.data.finalExtractedData.description,
+    'Database pgEdge containers high CPU load. Use Database Observability or connect to Hetzner instances to investigate'
+  );
+});
+
 await test('preserves complex label keys and resolved extraction through the live API', { skip: liveSkipReason() }, async () => {
   const complexLabels = cloneJson(schemaContent.sample);
   complexLabels.content = '**Firing**\n\nValue: B=2\nLabels:\n - alertname = complex-labels\n - e2e_run = unit-complex\n - test-complex-link = https://example.test/a=b?c=d\n - runbook-path = /srv/runbooks/db primary\nAnnotations:\n - ann1 = first annotation\nSilence: https://grafana.example.test/silence';

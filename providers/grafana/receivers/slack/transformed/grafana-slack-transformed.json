@@ -122,7 +122,7 @@
         "type": "regex",
         "config": {
           "flags": "s",
-          "pattern": "Labels:\\n(?<extract>.*?)(\\nAnnotations:|\\nSilence:|\\z)"
+          "pattern": "Labels:\\n(?<extract>.*?)(\\nAnnotations:|\\nSilence:|$)"
         }
       },
       "dictionary": {
@@ -200,7 +200,7 @@
         "type": "regex",
         "config": {
           "flags": "s",
-          "pattern": "\\s*-\\s*description\\s*=\\s*(?<extract>.*?)(?=\\n\\s*-\\s*|\\n```|\\n<|\\nSource:|\\nSilence:|\\z)"
+          "pattern": "\\s*-\\s*description\\s*=\\s*(?<extract>.*?)(?=\\n\\s*-\\s*|\\n```|\\n<|\\nSource:|\\nSilence:|$)"
         }
       },
       "sourceField": "attachments.0.text"
@@ -213,7 +213,7 @@
         "type": "regex",
         "config": {
           "flags": "s",
-          "pattern": "\\s*-\\s*summary\\s*=\\s*(?<extract>.*?)(?=\\n\\s*-\\s*|\\nSource:|\\nSilence:|\\z)"
+          "pattern": "\\s*-\\s*summary\\s*=\\s*(?<extract>.*?)(?=\\n\\s*-\\s*|\\nSource:|\\nSilence:|$)"
         }
       },
       "sourceField": "attachments.0.text"
