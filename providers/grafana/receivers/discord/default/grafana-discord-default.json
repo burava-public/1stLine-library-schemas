@@ -143,7 +143,7 @@
         "type": "regex",
         "config": {
           "flags": "s",
-          "pattern": "Labels:\\n(?<extract>.*?)(\\nAnnotations:|\\nSource:|\\nSilence:|\\nDashboard:|\\nPanel:|\\z)"
+          "pattern": "Labels:\\n(?<extract>.*?)(\\nAnnotations:|\\nSource:|\\nSilence:|\\nDashboard:|\\nPanel:|$)"
         }
       },
       "saveIntermediate": false,
@@ -235,7 +235,7 @@
         "type": "regex",
         "config": {
           "flags": "s",
-          "pattern": "\\s*-\\s*description\\s*=\\s*(?<extract>.*?)(?=\\n\\s*-\\s*|\\n```|\\n<|\\nSource:|\\nSilence:|\\nDashboard:|\\nPanel:|\\n\\n\\n\\*\\*(?:Firing|Resolved)\\*\\*|\\z)"
+          "pattern": "\\s*-\\s*description\\s*=\\s*(?<extract>.*?)(?=\\n\\s*-\\s*|\\n```|\\n<|\\nSource:|\\nSilence:|\\nDashboard:|\\nPanel:|\\n\\n\\n\\*\\*(?:Firing|Resolved)\\*\\*|$)"
         }
       },
       "fallbacks": [
@@ -247,7 +247,7 @@
             "type": "regex",
             "config": {
               "flags": "is",
-              "pattern": "\\*\\*(?:Firing|Resolved)\\*\\*\\s*\\n(?<extract>.*?)(?=\\n(?:Source|Silence|Dashboard|Panel):|\\n\\n\\n\\*\\*(?:Firing|Resolved)\\*\\*|\\z)"
+              "pattern": "\\*\\*(?:Firing|Resolved)\\*\\*\\s*\\n(?<extract>.*?)(?=\\n(?:Source|Silence|Dashboard|Panel):|\\n\\n\\n\\*\\*(?:Firing|Resolved)\\*\\*|$)"
             }
           }
         }
@@ -262,7 +262,7 @@
         "type": "regex",
         "config": {
           "flags": "s",
-          "pattern": "\\s*-\\s*summary\\s*=\\s*(?<extract>.*?)(?=\\n\\s*-\\s*|\\nSource:|\\nSilence:|\\nDashboard:|\\nPanel:|\\n\\n\\n\\*\\*(?:Firing|Resolved)\\*\\*|\\z)"
+          "pattern": "\\s*-\\s*summary\\s*=\\s*(?<extract>.*?)(?=\\n\\s*-\\s*|\\nSource:|\\nSilence:|\\nDashboard:|\\nPanel:|\\n\\n\\n\\*\\*(?:Firing|Resolved)\\*\\*|$)"
         }
       },
       "fallbacks": [
@@ -274,7 +274,7 @@
             "type": "regex",
             "config": {
               "flags": "is",
-              "pattern": "Annotations:\\n\\s*-\\s*[^=\\n]+\\s*=\\s*(?<extract>.*?)(?=\\n\\s*-\\s*|\\n```|\\n<|\\nSource:|\\nSilence:|\\nDashboard:|\\nPanel:|\\n\\n\\n\\*\\*(?:Firing|Resolved)\\*\\*|\\z)"
+              "pattern": "Annotations:\\n\\s*-\\s*[^=\\n]+\\s*=\\s*(?<extract>.*?)(?=\\n\\s*-\\s*|\\n```|\\n<|\\nSource:|\\nSilence:|\\nDashboard:|\\nPanel:|\\n\\n\\n\\*\\*(?:Firing|Resolved)\\*\\*|$)"
             }
           }
         }
