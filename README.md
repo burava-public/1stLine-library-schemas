@@ -88,6 +88,8 @@ MCP_FIRSTLINE_TOKEN=your_token_here
 
 Use your org slug or org uid as the `X-Org-Context` header value. This is required for authentication.
 
+Find more configurations in [MCP Docs](https://docs.burava.com/1stline/ai/mcp-server/)
+
 ## Repository Layout
 
 ```text
