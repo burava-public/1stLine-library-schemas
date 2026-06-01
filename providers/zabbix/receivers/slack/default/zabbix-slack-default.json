@@ -370,8 +370,16 @@
       }
     }
   },
+  "ai_escalation_mapping": {
+    "enabled": true,
+    "title": "attachments[0].title",
+    "fallback_title": "attachments[0].fallback",
+    "message": "attachments[0].text",
+    "assignment_link": "attachments[0].title_link"
+  },
   "resolution_proxy_config": "1stLine",
   "proxy_recurrent_alerts": false,
+  "ai_override_forward_to": null,
   "fingerprint_fields": [
     "channel",
     "event_id",

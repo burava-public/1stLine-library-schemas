@@ -28,7 +28,9 @@ await test('keeps incident variables inside lifecycle mappings only', () => {
       'resolution_patterns',
       'resolution_mapping',
       'incident_lifecycle_mapping',
+      'ai_escalation_mapping',
       'default_forward_to',
+      'ai_override_forward_to',
       'resolution_proxy_config',
       'proxy_recurrent_alerts',
       'fingerprint_fields',
@@ -37,6 +39,13 @@ await test('keeps incident variables inside lifecycle mappings only', () => {
 
   assertNoIncidentFields(schemaContent);
   assert.strictEqual(schemaContent.proxy_recurrent_alerts, false);
+  assert.deepStrictEqual(schemaContent.ai_escalation_mapping, {
+    enabled: true,
+    title: 'embeds[0].title',
+    message: 'embeds[0].description',
+    assignment_link: 'embeds[0].url',
+  });
+  assert.strictEqual(schemaContent.ai_override_forward_to, null);
   assert.deepStrictEqual(schemaContent.fingerprint_fields, ['event_id', 'title', 'status']);
   assert.strictEqual(schemaContent.ack_mapping.title, 'title');
   assert.strictEqual(schemaContent.ack_mapping.ack_link, 'source');

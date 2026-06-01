@@ -28,7 +28,9 @@ await test('keeps only supported root keys and incident variables inside lifecyc
       'resolution_patterns',
       'resolution_mapping',
       'incident_lifecycle_mapping',
+      'ai_escalation_mapping',
       'default_forward_to',
+      'ai_override_forward_to',
       'resolution_proxy_config',
       'proxy_recurrent_alerts',
       'fingerprint_fields',
@@ -39,6 +41,13 @@ await test('keeps only supported root keys and incident variables inside lifecyc
   assert.strictEqual(schemaContent.proxy_recurrent_alerts, false);
   assert.deepStrictEqual(schemaContent.fingerprint_fields, ['labels']);
   assert.strictEqual(schemaContent.resolution_proxy_config, '1stLine');
+  assert.deepStrictEqual(schemaContent.ai_escalation_mapping, {
+    enabled: true,
+    title: 'embeds[0].title',
+    message: 'content',
+    assignment_link: 'embeds[0].url',
+  });
+  assert.strictEqual(schemaContent.ai_override_forward_to, null);
   assert.strictEqual(schemaContent.ack_mapping.title, 'title');
   assert.strictEqual(schemaContent.ack_mapping.ack_link, 'embeds[0].url');
   assert.strictEqual(schemaContent.ack_mapping.unack_link, 'labels.__alert_unack_link__');

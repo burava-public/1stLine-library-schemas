@@ -442,8 +442,15 @@
       "register_alert": false
     }
   },
+  "ai_escalation_mapping": {
+    "enabled": true,
+    "title": "embeds[0].title",
+    "message": "content",
+    "assignment_link": "embeds[0].url"
+  },
   "resolution_proxy_config": "1stLine",
   "proxy_recurrent_alerts": false,
+  "ai_override_forward_to": null,
   "fingerprint_fields": [
     "labels"
   ],

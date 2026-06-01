@@ -21,7 +21,9 @@ await test('matches the transformed Slack schema contract locally', () => {
       'resolution_patterns',
       'resolution_mapping',
       'incident_lifecycle_mapping',
+      'ai_escalation_mapping',
       'default_forward_to',
+      'ai_override_forward_to',
       'resolution_proxy_config',
       'proxy_recurrent_alerts',
       'fingerprint_fields',
@@ -58,6 +60,14 @@ await test('matches the transformed Slack schema contract locally', () => {
   });
   assert.strictEqual(schemaContent.resolution_proxy_config, '1stLine');
   assert.strictEqual(schemaContent.proxy_recurrent_alerts, false);
+  assert.deepStrictEqual(schemaContent.ai_escalation_mapping, {
+    enabled: true,
+    title: 'attachments[0].title',
+    fallback_title: 'attachments[0].fallback',
+    message: 'attachments[0].text',
+    assignment_link: 'attachments[0].title_link',
+  });
+  assert.strictEqual(schemaContent.ai_override_forward_to, null);
   assert.deepStrictEqual(schemaContent.fingerprint_fields, ['labels']);
   assert.strictEqual(schemaContent.ack_mapping.title, 'attachments[0].title');
   assert.strictEqual(schemaContent.ack_mapping.ack_link, 'attachments[0].title_link');

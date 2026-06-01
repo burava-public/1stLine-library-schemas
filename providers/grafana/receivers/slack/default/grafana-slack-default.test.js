@@ -20,7 +20,9 @@ await test('stays pass-through oriented without a transformation template', () =
       'resolution_patterns',
       'resolution_mapping',
       'incident_lifecycle_mapping',
+      'ai_escalation_mapping',
       'default_forward_to',
+      'ai_override_forward_to',
       'resolution_proxy_config',
       'proxy_recurrent_alerts',
       'fingerprint_fields',
@@ -38,6 +40,14 @@ await test('stays pass-through oriented without a transformation template', () =
   assert.strictEqual(schemaContent.incident_lifecycle_mapping.reopened.overrides.incident_labels_json, '${labels}');
   assert.strictEqual(schemaContent.resolution_proxy_config, 'initial');
   assert.strictEqual(schemaContent.proxy_recurrent_alerts, false);
+  assert.deepStrictEqual(schemaContent.ai_escalation_mapping, {
+    enabled: true,
+    title: 'attachments[0].title',
+    fallback_title: 'attachments[0].fallback',
+    message: 'attachments[0].text',
+    assignment_link: 'attachments[0].title_link',
+  });
+  assert.strictEqual(schemaContent.ai_override_forward_to, null);
   assert.deepStrictEqual(schemaContent.fingerprint_fields, ['labels']);
 });
 
